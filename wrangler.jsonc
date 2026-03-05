@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "mcp-boilerplate",
+	"name": "fleet-support-triage",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-03-10",
 	"compatibility_flags": [
@@ -41,7 +41,11 @@
 			"database_name": "mcp-database",
 			"database_id": "09522b85-17d8-4f73-9f6b-0620ad67f64a"
 		}
-	]
+	],
+	"vars": {
+		"KB_REPO_OWNER": "launcflowdev",
+		"KB_REPO_NAME": "fleet-knowledge"
+	}
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
@@ -73,3 +77,4 @@
 	 */
 	// "services": [{ "binding": "MY_SERVICE", "service": "my-service" }]
 }
+

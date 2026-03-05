@@ -17,6 +17,9 @@ declare namespace Cloudflare {
 		STRIPE_SUBSCRIPTION_PRICE_ID: string;
 		STRIPE_METERED_PRICE_ID: string;
 		BASE_URL: string;
+		GITHUB_PAT: string;
+		KB_REPO_OWNER?: string;
+		KB_REPO_NAME?: string;
 		MCP_OBJECT: DurableObjectNamespace<import("./src/index").BoilerplateMCP>;
 		mcp_database: D1Database;
 	}

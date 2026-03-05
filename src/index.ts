@@ -9,6 +9,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import stripeWebhookHandler from "./webhooks/stripe";
 import * as tools from './tools';
 import { TicketClassifier } from './services/classifier';
+import { registerKbTools } from './kb/tools';
 
 type State = PaymentState & {};
 
@@ -52,6 +53,9 @@ export class BoilerplateMCP extends PaidMcpAgent<Env, State, AgentProps> {
 			STRIPE_METERED_PRICE_ID: this.env.STRIPE_METERED_PRICE_ID,
 			BASE_URL: this.env.BASE_URL
 		});
+
+		// B1 KB Access Layer — Fleet Knowledge Base tools
+		registerKbTools(this);
 	}
 }
 
