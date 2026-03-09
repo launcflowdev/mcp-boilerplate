@@ -1,59 +1,23 @@
 import OAuthProvider from "@cloudflare/workers-oauth-provider";
 import { GoogleHandler } from "./auth/google-handler";
 import { Props } from "./auth/oauth";
-import {
-	PaymentState,
-	experimental_PaidMcpAgent as PaidMcpAgent,
-  } from '@stripe/agent-toolkit/cloudflare';
+import { McpAgent } from 'agents/mcp';
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import stripeWebhookHandler from "./webhooks/stripe";
-import * as tools from './tools';
 import { TicketClassifier } from './services/classifier';
 import { registerKbTools } from './kb/tools';
 
-type State = PaymentState & {};
+type State = {};
 
-type AgentProps = Props & {
-	STRIPE_SUBSCRIPTION_PRICE_ID: string;
-	BASE_URL: string;
-};
+type AgentProps = Props & {};
 
 // Define our MCP agent with tools
-export class BoilerplateMCP extends PaidMcpAgent<Env, State, AgentProps> {
+export class BoilerplateMCP extends McpAgent<Env, State, AgentProps> {
 	server = new McpServer({
 		name: "Boilerplate MCP",
 		version: "1.0.0",
 	});
 
 	async init() {
-		// Example free tools (that don't require payment but do require a logged in user)
-		tools.addTool(this);
-		tools.calculateTool(this);
-
-		// Example of a free tool that checks for active subscriptions and the status of the logged in user's Stripe customer ID
-		tools.checkPaymentHistoryTool(this, {
-			BASE_URL: this.env.BASE_URL,
-			STRIPE_SECRET_KEY: this.env.STRIPE_SECRET_KEY
-		});
-
-		// Example of a paid tool that requires a logged in user and a one-time payment
-		tools.onetimeAddTool(this, {
-			STRIPE_ONE_TIME_PRICE_ID: this.env.STRIPE_ONE_TIME_PRICE_ID,
-			BASE_URL: this.env.BASE_URL
-		});
-
-		// Example of a paid tool that requires a logged in user and a subscription
-		tools.subscriptionTool(this, {
-			STRIPE_SUBSCRIPTION_PRICE_ID: this.env.STRIPE_SUBSCRIPTION_PRICE_ID,
-			BASE_URL: this.env.BASE_URL
-		});
-
-		// Example of a paid tool that requires a logged in user and a subscription with metered usage
-		tools.meteredAddTool(this, {
-			STRIPE_METERED_PRICE_ID: this.env.STRIPE_METERED_PRICE_ID,
-			BASE_URL: this.env.BASE_URL
-		});
-
 		// B1 KB Access Layer — Fleet Knowledge Base tools
 		registerKbTools(this);
 	}
@@ -690,11 +654,6 @@ export default {
 			return new Response(successPage.default, {
 				headers: { "Content-Type": "text/html" },
 			});
-		}
-		
-		// Handle webhook
-		if (path === "/webhooks/stripe") {
-			return stripeWebhookHandler.fetch(request, env);
 		}
 		
 		// All other routes go to OAuth provider
